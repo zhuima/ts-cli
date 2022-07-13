@@ -1,0 +1,35 @@
+name: Lighthouse Dev CI
+on: pull_request
+jobs:
+  lighthouse:
+    runs-on: ubuntu-latest
+    env:
+      # You can substitute the harcoded preview url with your preview url
+      preview_url: https://zhuima.github.io/
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v1
+        with:
+          node-version: '16.x'
+      - name: Install dependencies
+        run: yarn
+      # You can add your steps here to create a preview
+      - name: Run Lighthouse
+        id: lighthouse
+        shell: bash
+        run: |
+          lighthouse=$(npx dx-scripts lighthouse $preview_url)
+          lighthouse="${lighthouse//'%'/'%25'}"
+          lighthouse="${lighthouse//$'\n'/'%0A'}"
+          lighthouse="${lighthouse//$'\r'/'%0D'}"
+          echo "::set-output name=lighthouse_report::$lighthouse"
+      - name: Notify PR
+        uses: wow-actions/auto-comment@v1
+        with:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          pullRequestSynchronize: |
+            👋 @{{ author }},
+            Here is your Lighthouse performance overview🎉
+            ```
+            ${{ steps.lighthouse.outputs.lighthouse_report }}
+            ```
