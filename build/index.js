@@ -1,5 +1,28 @@
 #!/usr/bin/env node
 "use strict";
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    __setModuleDefault(result, mod);
+    return result;
+};
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -13,58 +36,18 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const chalk_1 = __importDefault(require("chalk"));
 const commander_1 = require("commander");
-const clear_1 = __importDefault(require("clear"));
-const cross_spawn_1 = __importDefault(require("cross-spawn"));
-const figlet_1 = __importDefault(require("figlet"));
-const utils_1 = require("./utils");
-const lighthouse = require.resolve("lighthouse/lighthouse-cli");
-const { computeMedianRun } = require("lighthouse/lighthouse-core/lib/median-run.js");
-(0, clear_1.default)();
-console.log(chalk_1.default.red(figlet_1.default.textSync("Lighthouse-cli", { horizontalLayout: "full" })));
-function run() {
-    return __awaiter(this, void 0, void 0, function* () {
-        const program = new commander_1.Command();
-        program
-            .version("0.0.1")
-            .name("lighthouse-cli")
-            .description("Lighthouse CLI")
-            .argument("<url>", "Lighthouse will run the analysis on the URL.")
-            .option("-i, --iteration <type>", "How many times Lighthouse should run the analysis per URL.", "5")
-            .parse();
-        const [url] = program.args;
-        const options = program.opts();
-        console.log(`🗼 Running Lighthouse for ${url}, It will take a while, please wait...`);
-        const results = [];
-        for (let i = 0; i < options.iteration; i++) {
-            const { status, stdout } = cross_spawn_1.default.sync(process.execPath, [
-                lighthouse,
-                url,
-                "--output=json",
-                "--chromeFlags=--headless",
-                "--only-categories=performance",
-            ]);
-            if (status !== 0) {
-                continue;
-            }
-            results.push(JSON.parse(stdout.toString()));
-        }
-        const median = computeMedianRun(results);
-        console.log(`\n${chalk_1.default.green("✔")} Report is ready for ${median.finaUrl}.`);
-        console.log(`🗼 Median performance score: ${(0, utils_1.draw)(median.categories.performance.score, median.categories.performance.score * 100)}`);
-        const primaryMatrices = [
-            "first-contentful-paint",
-            "interactive",
-            "speed-index",
-            "total-blocking-time",
-            "largest-contentful-paint",
-            "cumulative-layout-shift",
-        ];
-        primaryMatrices.map((matrix) => {
-            const { title, displayValue, score } = median.audits[matrix];
-            console.log(`🗼 ${title}: ${(0, utils_1.draw)(score, displayValue)}`);
-        });
-    });
-}
-run();
+const lighthouse_1 = __importDefault(require("./commands/lighthouse"));
+commander_1.program
+    .command("init")
+    .description("init templte (初始化项目)")
+    .action(() => __awaiter(void 0, void 0, void 0, function* () {
+    yield Promise.resolve().then(() => __importStar(require("./commands/init")));
+}));
+commander_1.program
+    .command("lighthouse")
+    .description("lighthouse url (检测url)")
+    .action(() => __awaiter(void 0, void 0, void 0, function* () {
+    yield (0, lighthouse_1.default)();
+}));
+commander_1.program.parse(process.argv);
