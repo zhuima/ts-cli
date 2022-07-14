@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 import { createCommand } from "commander";
 import { init } from "./commands/init.js";
-import { lighthouse } from "./commands/lighthouse.js";
+import { lh } from "./commands/lighthouse.js";
 const program = createCommand();
 
 program.name("my-cli").description("My CLI").version("0.0.1");
@@ -9,7 +9,7 @@ program.name("my-cli").description("My CLI").version("0.0.1");
 program.option("-v, --verbose", "verbose logging");
 
 program.addCommand(init);
-program.addCommand(lighthouse);
+program.addCommand(lh);
 // program.addHelpCommand();
 // program
 //   .command("init")
