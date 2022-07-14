@@ -2,41 +2,43 @@
 import { createCommand } from "commander";
 import { init } from "./commands/init.js";
 import { lh } from "./commands/lighthouse.js";
+import { logo, mylogo } from "./commands/logo.js";
+import chalk from "chalk";
+
 const program = createCommand();
 
-program.name("my-cli").description("My CLI").version("0.0.1");
+program
+  .name("my-cli")
+  .description("My CLI")
+  .usage("[commands] [options]")
+  .version("0.0.1")
+  .helpOption("-h, --help", "输出所有命令");
 
-program.option("-v, --verbose", "verbose logging");
+// program.option("-v, --verbose", "verbose logging");
 
 program.addCommand(init);
 program.addCommand(lh);
-// program.addHelpCommand();
-// program
-//   .command("init")
-//   .description("Initialize a new project")
-//   // eslint-disable-next-line prettier/prettier
-//   .requiredOption("-u --url <url>", "Lighthouse will run the analysis on the URL.")
-//   .addOption(
-//     new Option(
-//       "-i, --iteration <delay>",
-//       "How many times Lighthouse should run the analysis per URL.",
-//     ).default(5, "five seconds"),
-//   )
-//   .action((options) => {
-//     // console.log(`Initializing project ${options.url}`);
-//     // console.log(`Force: ${options.iteration}`);
-//     init(options);
-//   });
+program.addCommand(logo);
 
-// program.addHelpText(
-//   "after",
-//   `
+program.addHelpText("before", `${mylogo("my-cli")}`);
 
-// Example call:
-//   $ my-cli --help`,
-// );
+program.addHelpText(
+  "after",
+  chalk.green(`
 
-// program.parse(process.argv);
+Example call:
+  $ my-cli init -u http://www.baidu.com 
+  $ my-cli init -u http://www.baidu.com -i 2
+`),
+);
+
+program.addHelpText(
+  "afterAll",
+  chalk.blue(`
+Author:
+  zhuima <zhuima314@gmail.com>
+`),
+);
 
 async function main() {
   await program.parseAsync();

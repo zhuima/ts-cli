@@ -3,12 +3,11 @@
     "version": "1.0.0",
     "description": "ts cli tools example",
     "main": "src/index.ts",
-    "author": "zhuima",
+    "author": "zhuima <zhuima314@gmail.com>",
     "license": "MIT",
     "files": [
         "bin"
     ],
-    "type": "module",
     "bin": {
         "my-cli": "./build/index.js"
     },

@@ -20,6 +20,7 @@ ts cli demo
 
 [使用 typescript 快速开发一个 cli](https://www.cnblogs.com/JasonLong/p/14075724.html)
 
+[TypeScript + NodeJs 编写一个 React 脚手架工具](https://github.com/biaov/react-cli-mine)
 
 # Error
 
