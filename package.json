@@ -8,6 +8,7 @@
     "files": [
         "bin"
     ],
+    "type": "module",
     "bin": {
         "my-cli": "./build/index.js"
     },
@@ -15,7 +16,7 @@
         "tsc": "tsc",
         "lint": "eslint --ext .ts . --fix",
         "prettier": "prettier --write .",
-        "build": "yarn tsc && yarn chmod",
+        "build": "tsc --build --clean && tsc --build && yarn chmod",
         "chmod": "chmod +x ./build/index.js"
     },
     "devDependencies": {
@@ -27,6 +28,7 @@
         "@typescript-eslint/eslint-plugin": "^5.30.6",
         "@typescript-eslint/parser": "^5.30.6",
         "dx-scripts": "^0.1.2",
+        "esbuild": "^0.14.49",
         "eslint": "^8.19.0",
         "eslint-config-prettier": "^8.5.0",
         "eslint-plugin-prettier": "^4.2.1",
@@ -41,6 +43,7 @@
         "figlet": "^1.5.2",
         "inquirer": "^9.0.0",
         "lighthouse": "^9.6.3",
+        "node-fetch": "2",
         "ora": "^6.1.2"
     }
 }

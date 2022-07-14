@@ -54,46 +54,74 @@
 // }
 
 // run();
+import { createCommand, Option } from "commander";
+import spawn from "cross-spawn";
+import chalk from "chalk";
+import { draw } from "../utils";
+// const { lighthouse } = require.resolve("lighthouse/lighthouse-cli");
 
-import inquirer from "inquirer";
-import ora from "ora";
+import lighthouse from "lighthouse";
 
-const lighthouse = () => {
-  const spinner = ora("初始化中，请稍后...");
-  // 定义问题
-  const questions = [
-    {
-      type: "input",
-      name: "url",
-      message: "url地址",
-      validate: (val?: string) => {
-        if (!val) {
-          return "请输入url";
-        }
-        if (val.length === 0) {
-          return "url不能为空";
-        }
-      },
-    },
-    {
-      type: "input",
-      name: "iteration",
-      message: "iteration",
-      validate: (val?: number) => {
-        if (!val) {
-          return "请输入时间差";
-        }
-      },
-    },
-  ];
+const { computeMedianRun } = require("lighthouse/lighthouse-core/lib/median-run.js");
 
-  inquirer.prompt(questions).then(({ url, iteration }) => {
-    // 获取输入结果
-    spinner.start();
-    spinner.color = "green";
-    console.log(`${url}  is ${iteration}`);
-    return;
+import { spinnerError, spinnerSuccess, updateSpinnerText } from "../spinner.js";
+
+// export default { lighthouse };
+
+export const lh = createCommand("lh");
+
+lh.name("lh")
+  .description("Analyze the performance of a website")
+  // eslint-disable-next-line prettier/prettier
+  .requiredOption("-u --url <url>", "Lighthouse will run the analysis on the URL.")
+  // eslint-disable-next-line prettier/prettier
+  .addOption(
+    new Option(
+      "-i, --iteration <delay>",
+      "How many times Lighthouse should run the analysis per URL.",
+    ).default(10, "five seconds"),
+  )
+  .action(async (options: { url: string; iteration: number }) => {
+    updateSpinnerText("初始化中，请稍后...");
+    await new Promise((resolve) => setTimeout(resolve, 1000));
+    spinnerSuccess();
+    const results = [];
+    const url = options.url;
+    const iteration = options.iteration;
+    for (let i = 0; i < options.iteration; i++) {
+      const { status, stdout } = spawn.sync(process.execPath, [
+        lighthouse,
+        url,
+        "--output=json",
+        "--chromeFlags=--headless",
+        "--only-categories=performance",
+      ]);
+      if (status !== 0) {
+        continue;
+      }
+      results.push(JSON.parse(stdout.toString()));
+    }
+
+    const median = computeMedianRun(results);
+    console.log(`\n${chalk.green("✔")} Report is ready for ${median.finaUrl}.`);
+    console.log(
+      `🗼 Median performance score: ${draw(
+        median.categories.performance.score,
+        median.categories.performance.score * 100,
+      )}`,
+    );
+
+    const primaryMatrices = [
+      "first-contentful-paint",
+      "interactive",
+      "speed-index",
+      "total-blocking-time",
+      "largest-contentful-paint",
+      "cumulative-layout-shift",
+    ];
+
+    primaryMatrices.map((matrix) => {
+      const { title, displayValue, score } = median.audits[matrix];
+      console.log(`🗼 ${title}: ${draw(score, displayValue)}`);
+    });
   });
-};
-
-export default { lighthouse };
