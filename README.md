@@ -41,8 +41,8 @@ Commands:
 
 
 Example call:
-  $ my-cli init -u http://www.baidu.com
-  $ my-cli init -u http://www.baidu.com -i 2
+  $ my-cli init -h
+  $ my-cli lh -h
 
 
 Author:
