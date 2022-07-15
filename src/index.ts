@@ -20,14 +20,14 @@ program.addCommand(init);
 program.addCommand(lh);
 program.addCommand(logo);
 
-program.addHelpText("before", `${mylogo("my-cli")}`);
+program.addHelpText("beforeAll", `${mylogo("my-cli")}`);
 
 program.addHelpText(
   "after",
   chalk.green(`
 
 Example call:
-  $ my-cli init -u http://www.baidu.com 
+  $ my-cli init -u http://www.baidu.com
   $ my-cli init -u http://www.baidu.com -i 2
 `),
 );

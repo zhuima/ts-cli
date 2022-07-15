@@ -69,3 +69,14 @@ $ git push --force
 
 
 [Git之深入解析如何解决.git目录过大的问题](https://bbs.huaweicloud.com/blogs/343828)
+
+
+# QA
+
+- typescript 中function的定义
+  - 尖头函数定义引用不生效
+  - 普通函数就可以正常工作
+
+
+
+- typescript函数定义方式的差异
