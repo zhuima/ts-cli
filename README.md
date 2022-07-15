@@ -49,5 +49,23 @@ node --experimental-specifier-resolution=node build/index.js
 ```
 
 
-        // "build": "yarn tsc && yarn chmod",
-        // "chmod": "chmod +x ./build/index.js"
+
+# 误提交node_modules的补救措施
+
+image.png
+
+```python
+$ git filter-branch --index-filter 'git rm -r --cached --ignore-unmatch node_modules' --prune-empty
+$ git reflog expire --expire=now --all
+$ git gc --prune=now --aggressive
+
+# 推送上去
+# 此推将更新远程服务器上的所有refs分支
+$ git push --force
+# 不要再原来的仓库下再操作，删除重新clone一个新的仓库
+```
+
+> 参考文档
+
+
+[Git之深入解析如何解决.git目录过大的问题](https://bbs.huaweicloud.com/blogs/343828)
