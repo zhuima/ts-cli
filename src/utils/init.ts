@@ -6,8 +6,6 @@ import download from "download-git-repo";
 import chalk from "chalk";
 import { spinnerError, spinnerSuccess, updateSpinnerText, stopSpinner } from "../spinner.js";
 
-// const spinner = ora("下载模板中, 请稍后...");
-
 // 模板字典
 const template: { name: string; value: string }[] = [
   {
@@ -23,7 +21,6 @@ const template: { name: string; value: string }[] = [
 // 安装项目依赖
 const install = (params: { projectName: string }) => {
   const { projectName } = params;
-  //   spinner.text = "正在安装依赖，如果您的网络情况较差，这可能是一杯茶的功夫";
   updateSpinnerText("正在安装依赖，如果您的网络情况较差，这可能是一杯茶的功夫...");
   // 执行install
   exec(`cd ${projectName} && npm i`, (error, stdout, stderr) => {
@@ -32,14 +29,11 @@ const install = (params: { projectName: string }) => {
 
       return;
     } else if (stdout) {
-      //   spinner.text = `安装成功, 进入${projectName}开始撸码～`;
       updateSpinnerText(`安装成功, 进入${projectName}开始撸码～`);
       spinnerSuccess();
     } else {
-      //   spinner.text = `自动安装失败, 请查看错误，且之后自行安装依赖～`;
       updateSpinnerText(`自动安装失败, 请查看错误，且之后自行安装依赖～`);
       stopSpinner();
-      //   spinner.fail();
       console.error(stderr);
     }
   });
@@ -62,7 +56,6 @@ const editPackageInfo = (params: { projectName: string }) => {
     fs.writeFile(`${path}/package.json`, str, function (err) {
       if (err) throw err;
     });
-    // spinner.text = `下载完成, 正在自动安装项目依赖...`;
     updateSpinnerText(`下载完成, 正在自动安装项目依赖...`);
     install({ projectName });
   });
@@ -76,7 +69,6 @@ const downloadTemplate = (params: { repository: string; projectName: string }) =
       editPackageInfo({ projectName });
     } else {
       console.log(err);
-      //   spinner.stop(); // 停止
       stopSpinner();
       console.log(chalk.red("拉取模板出现未知错误"));
     }
@@ -113,9 +105,7 @@ const questions = [
 inquirer.prompt(questions).then((answers) => {
   // 获取答案
   const { template: templateUrl, projectName } = answers;
-  //   spinner.start();
-  //   spinner.color = "green";
-  updateSpinnerText("下载模板中, 请稍后...")
+  updateSpinnerText("下载模板中, 请稍后...");
   // 开始下载模板
   downloadTemplate({
     repository: templateUrl,

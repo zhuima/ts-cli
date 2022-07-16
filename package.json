@@ -1,5 +1,5 @@
 {
-    "name": "ts-cli-tools",
+    "name": "my-cli",
     "version": "1.0.0",
     "description": "ts cli tools example",
     "main": "src/index.ts",
